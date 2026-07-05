@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en-NZ" class="scroll-smooth">
+<html lang="en-NZ">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>TapKiwi — Turn happy customers into 5-star Google reviews</title>
-  <meta name="description" content="TapKiwi review stands for Auckland cafés, barbers and salons. Tap, review, done in 10 seconds. Set up in person — no waiting, no shipping, no monthly fees." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TapKiwi — A5 Flyer</title>
 
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -27,390 +26,162 @@
     };
   </script>
 
-  <style type="text/tailwindcss">
-    /* Soft tap-ripple on the demo stand */
-    @keyframes tapPulse {
-      0%   { transform: scale(0.9); opacity: 0.9; }
-      70%  { transform: scale(1.6); opacity: 0;   }
-      100% { transform: scale(1.6); opacity: 0;   }
+  <style>
+    /* ---- A5 print setup ---- */
+    @page { size: A5 portrait; margin: 0; }
+
+    * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
-    .tap-ring { animation: tapPulse 2.2s ease-out infinite; }
-    .tap-ring-delay { animation-delay: 1.1s; }
 
-    /* FAQ chevron rotation */
-    details[open] .faq-chevron { transform: rotate(180deg); }
-    details > summary { list-style: none; }
-    details > summary::-webkit-details-marker { display: none; }
+    .sheet {
+      width: 148mm;
+      height: 210mm;
+      /* 13mm ink-safe margin on every edge */
+      padding: 13mm;
+    }
 
-    /* Respect iPhone home-indicator safe area on the sticky bar */
-    .safe-bottom { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
+    /* Screen preview: grey desk behind the sheet */
+    @media screen {
+      body { background: #e2e8f0; padding: 2rem 0; }
+      .sheet {
+        margin: 0 auto;
+        box-shadow: 0 10px 40px rgba(15, 23, 42, 0.25);
+        border-radius: 2px;
+      }
+    }
+
+    @media print {
+      html, body { width: 148mm; height: 210mm; margin: 0; padding: 0; background: #fff; }
+      .sheet { margin: 0; box-shadow: none; border-radius: 0; }
+    }
   </style>
 </head>
 
-<body class="bg-white text-ink font-sans antialiased selection:bg-gblue/15">
+<body class="font-sans text-ink antialiased">
 
-  <!-- ======= Google-colour accent strip ======= -->
-  <div class="h-1.5 w-full flex" aria-hidden="true">
-    <div class="flex-1 bg-gblue"></div>
-    <div class="flex-1 bg-gred"></div>
-    <div class="flex-1 bg-gyellow"></div>
-    <div class="flex-1 bg-ggreen"></div>
-  </div>
+  <div class="sheet bg-white flex flex-col justify-between overflow-hidden">
 
-  <!-- ======= Header ======= -->
-  <header class="max-w-lg lg:max-w-5xl mx-auto px-6 pt-5 pb-2 flex items-center justify-between">
-    <a href="#top" class="text-2xl font-extrabold tracking-tight">
-      Tap<span class="text-ggreen">Kiwi</span><span class="text-gblue">.</span>
-    </a>
-    <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 bg-slate-100 rounded-full px-3 py-1.5">
-      <svg class="w-3.5 h-3.5 text-gred" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/>
-      </svg>
-      Auckland, NZ
-    </span>
-  </header>
-
-  <main id="top">
-
-    <!-- ======= Hero ======= -->
-    <section class="max-w-lg lg:max-w-5xl mx-auto px-6 pt-8 pb-14 lg:pt-16 lg:grid lg:grid-cols-2 lg:gap-14 lg:items-center">
-      <div>
-        <p class="inline-flex items-center gap-2 text-sm font-semibold text-gblue bg-gblue/10 rounded-full px-4 py-2 mb-6">
-          <svg class="w-4 h-4 text-gyellow" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/>
-          </svg>
-          Google reviews, made effortless
+    <!-- ======= Header ======= -->
+    <header>
+      <div class="flex items-center justify-between">
+        <p class="text-[16pt] font-extrabold tracking-tight leading-none">
+          Tap<span class="text-ggreen">Kiwi</span><span class="text-gblue">.</span>
         </p>
-
-        <h1 class="text-[2.6rem] leading-[1.08] lg:text-6xl font-extrabold tracking-tight">
-          Turn happy customers into 5&#8209;star Google reviews
-        </h1>
-
-        <p class="mt-5 text-lg lg:text-xl text-slate-500 leading-relaxed">
-          Set up in person across Auckland — no waiting, no shipping.
+        <p class="text-[7.5pt] font-bold uppercase tracking-[0.15em] text-slate-400">
+          Auckland &middot; NZ
         </p>
-
-        <div class="mt-8">
-          <a href="https://wa.me/642041087540?text=Hi%20TapKiwi!%20I%27d%20like%20to%20book%20a%20free%20demo%20for%20my%20business."
-             class="block w-full lg:inline-block lg:w-auto text-center bg-gblue text-white text-lg font-bold rounded-2xl px-10 py-5 shadow-lg shadow-gblue/30 ring-4 ring-gblue/15 active:scale-[0.98] transition">
-            Book a free demo
-          </a>
-          <p class="mt-4 text-sm text-slate-400 text-center lg:text-left">
-            Free 5-minute demo at your counter · No obligation
-          </p>
-        </div>
       </div>
 
-      <!-- Mock review stand -->
-      <div class="mt-14 lg:mt-0 flex justify-center" aria-hidden="true">
-        <div class="relative w-64 rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/60 bg-white p-8 text-center">
-          <div class="relative mx-auto w-16 h-16 mb-5">
-            <span class="tap-ring absolute inset-0 rounded-full border-4 border-gblue/40"></span>
-            <span class="tap-ring tap-ring-delay absolute inset-0 rounded-full border-4 border-gblue/40"></span>
-            <span class="relative flex w-16 h-16 items-center justify-center rounded-full bg-gblue text-white">
-              <!-- contactless / tap icon -->
-              <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-                <path d="M6.5 8.5a8 8 0 0 1 0 7" />
-                <path d="M10 6.5a11 11 0 0 1 0 11" />
-                <path d="M13.5 4.5a14 14 0 0 1 0 15" />
-              </svg>
-            </span>
-          </div>
-          <p class="font-extrabold text-lg leading-snug">Enjoyed your visit?</p>
-          <p class="text-sm text-slate-500 mt-1">Tap here to leave us a review</p>
-          <div class="mt-4 flex justify-center gap-1">
-            <svg class="w-5 h-5 text-gyellow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/></svg>
-            <svg class="w-5 h-5 text-gyellow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/></svg>
-            <svg class="w-5 h-5 text-gyellow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/></svg>
-            <svg class="w-5 h-5 text-gyellow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/></svg>
-            <svg class="w-5 h-5 text-gyellow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/></svg>
-          </div>
-          <!-- 4-colour base of the stand -->
-          <div class="mt-6 h-1.5 rounded-full flex overflow-hidden">
-            <div class="flex-1 bg-gblue"></div>
-            <div class="flex-1 bg-gred"></div>
-            <div class="flex-1 bg-gyellow"></div>
-            <div class="flex-1 bg-ggreen"></div>
-          </div>
+      <!-- Google-colour rule -->
+      <div class="mt-[3mm] h-[1.2mm] flex rounded-full overflow-hidden" aria-hidden="true">
+        <div class="flex-1 bg-gblue"></div>
+        <div class="flex-1 bg-gred"></div>
+        <div class="flex-1 bg-gyellow"></div>
+        <div class="flex-1 bg-ggreen"></div>
+      </div>
+
+      <h1 class="mt-[4mm] text-[20pt] leading-[1.15] font-extrabold tracking-tight">
+        Turn happy customers into 5&#8209;star Google reviews
+      </h1>
+    </header>
+
+    <!-- ======= Visual trust hook ======= -->
+    <section class="mt-[4mm] border border-slate-200 rounded-xl px-[6mm] py-[3mm] flex items-center justify-between">
+      <div class="flex items-center gap-[3mm]">
+        <span class="text-[17pt] font-extrabold leading-none">5.0</span>
+        <div class="flex gap-[1mm]" aria-label="Five gold stars">
+          <svg class="w-[6mm] h-[6mm] text-gyellow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/></svg>
+          <svg class="w-[6mm] h-[6mm] text-gyellow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/></svg>
+          <svg class="w-[6mm] h-[6mm] text-gyellow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/></svg>
+          <svg class="w-[6mm] h-[6mm] text-gyellow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/></svg>
+          <svg class="w-[6mm] h-[6mm] text-gyellow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/></svg>
         </div>
       </div>
+      <p class="text-[8.5pt] font-semibold text-slate-500 leading-snug text-right">
+        Reviews on <span class="font-extrabold"><span class="text-gblue">G</span><span class="text-gred">o</span><span class="text-gyellow">o</span><span class="text-gblue">g</span><span class="text-ggreen">l</span><span class="text-gred">e</span></span><br />
+        while they're still smiling
+      </p>
     </section>
 
-    <!-- ======= The Problem ======= -->
-    <section class="bg-slate-50 border-y border-slate-100">
-      <div class="max-w-lg lg:max-w-5xl mx-auto px-6 py-16 lg:py-20">
-        <h2 class="text-3xl lg:text-4xl font-extrabold tracking-tight text-center">
-          Great service. <span class="text-gred">Crickets on Google.</span>
-        </h2>
-        <p class="mt-3 text-slate-500 text-center text-lg">Sound familiar?</p>
-
-        <div class="mt-10 grid gap-5 lg:grid-cols-2 lg:max-w-3xl lg:mx-auto">
-          <div class="bg-white rounded-2xl border border-slate-200 border-t-4 border-t-gred p-7 shadow-sm">
-            <p class="text-4xl mb-3" aria-hidden="true">🤦</p>
-            <h3 class="text-xl font-bold">Customers forget to leave reviews</h3>
-            <p class="mt-2 text-slate-500 leading-relaxed">
-              They love the flat white, promise they'll review you… then life happens. By the time they're home, it's gone.
-            </p>
-          </div>
-          <div class="bg-white rounded-2xl border border-slate-200 border-t-4 border-t-gyellow p-7 shadow-sm">
-            <p class="text-4xl mb-3" aria-hidden="true">😬</p>
-            <h3 class="text-xl font-bold">Asking for reviews feels awkward</h3>
-            <p class="mt-2 text-slate-500 leading-relaxed">
-              "Hey, could you maybe review us?" — nobody enjoys saying it, and your staff avoid it. So it just doesn't happen.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======= How It Works ======= -->
-    <section class="max-w-lg lg:max-w-5xl mx-auto px-6 py-16 lg:py-24">
-      <h2 class="text-3xl lg:text-4xl font-extrabold tracking-tight text-center">How it works</h2>
-      <p class="mt-3 text-slate-500 text-center text-lg">Done in 10 seconds — while they're still smiling.</p>
-
-      <ol class="mt-12 grid gap-10 lg:grid-cols-3 lg:gap-8 lg:max-w-4xl lg:mx-auto">
-        <li class="flex lg:flex-col items-start lg:items-center gap-5 lg:text-center">
-          <span class="flex-none w-14 h-14 rounded-2xl bg-gblue/10 text-gblue flex items-center justify-center">
-            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-              <path d="M6.5 8.5a8 8 0 0 1 0 7" /><path d="M10 6.5a11 11 0 0 1 0 11" /><path d="M13.5 4.5a14 14 0 0 1 0 15" />
-            </svg>
-          </span>
-          <div>
-            <p class="text-sm font-bold text-gblue uppercase tracking-wider">Step 1</p>
-            <h3 class="text-xl font-bold mt-1">Tap</h3>
-            <p class="mt-1.5 text-slate-500 leading-relaxed">Your customer taps their phone on the TapKiwi stand at the counter.</p>
-          </div>
+    <!-- ======= 3-step process ======= -->
+    <section class="mt-[4mm]">
+      <ol class="space-y-[2mm]">
+        <li class="flex items-center gap-[3.5mm]">
+          <span class="flex-none w-[7mm] h-[7mm] rounded-full bg-gblue text-white text-[10.5pt] font-extrabold flex items-center justify-center">1</span>
+          <p class="text-[11.5pt] font-bold">We set it up in person</p>
         </li>
-        <li class="flex lg:flex-col items-start lg:items-center gap-5 lg:text-center">
-          <span class="flex-none w-14 h-14 rounded-2xl bg-gyellow/15 text-gyellow flex items-center justify-center">
-            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4 1.15 6.55L12 17l-5.9 3.25 1.15-6.55L2.5 9.3l6.6-1.04L12 2z"/>
-            </svg>
-          </span>
-          <div>
-            <p class="text-sm font-bold text-gyellow uppercase tracking-wider">Step 2</p>
-            <h3 class="text-xl font-bold mt-1">Review</h3>
-            <p class="mt-1.5 text-slate-500 leading-relaxed">Your Google review page opens instantly. No app, no searching, no typing your name.</p>
-          </div>
+        <li class="flex items-center gap-[3.5mm]">
+          <span class="flex-none w-[7mm] h-[7mm] rounded-full bg-gred text-white text-[10.5pt] font-extrabold flex items-center justify-center">2</span>
+          <p class="text-[11.5pt] font-bold">Customers tap</p>
         </li>
-        <li class="flex lg:flex-col items-start lg:items-center gap-5 lg:text-center">
-          <span class="flex-none w-14 h-14 rounded-2xl bg-ggreen/10 text-ggreen flex items-center justify-center">
-            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M4 12.5l5 5L20 6.5" />
-            </svg>
-          </span>
-          <div>
-            <p class="text-sm font-bold text-ggreen uppercase tracking-wider">Step 3</p>
-            <h3 class="text-xl font-bold mt-1">Done</h3>
-            <p class="mt-1.5 text-slate-500 leading-relaxed">Five stars posted before they've picked up their coffee. That's it.</p>
-          </div>
+        <li class="flex items-center gap-[3.5mm]">
+          <span class="flex-none w-[7mm] h-[7mm] rounded-full bg-ggreen text-white text-[10.5pt] font-extrabold flex items-center justify-center">3</span>
+          <p class="text-[11.5pt] font-bold">Your Google reviews grow</p>
         </li>
       </ol>
     </section>
 
-    <!-- ======= Why TapKiwi ======= -->
-    <section class="bg-slate-50 border-y border-slate-100">
-      <div class="max-w-lg lg:max-w-5xl mx-auto px-6 py-16 lg:py-20">
-        <h2 class="text-3xl lg:text-4xl font-extrabold tracking-tight text-center">
-          Why Tap<span class="text-ggreen">Kiwi</span>?
-        </h2>
-        <p class="mt-4 text-lg text-slate-500 text-center max-w-md lg:max-w-xl mx-auto leading-relaxed">
-          We set it up in person, on the spot. No waiting for shipping, no hidden monthly fees — proudly local Auckland.
-        </p>
+    <!-- ======= Pricing tiers ======= -->
+    <section class="mt-[4mm] space-y-[3mm]">
 
-        <ul class="mt-10 space-y-4 max-w-md lg:max-w-lg mx-auto">
-          <li class="flex items-center gap-4 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-            <span class="flex-none w-9 h-9 rounded-full bg-ggreen/10 text-ggreen flex items-center justify-center">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-            </span>
-            <p class="font-semibold">Installed in person, working before we leave</p>
-          </li>
-          <li class="flex items-center gap-4 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-            <span class="flex-none w-9 h-9 rounded-full bg-gblue/10 text-gblue flex items-center justify-center">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-            </span>
-            <p class="font-semibold">One-time payment — no subscriptions, ever</p>
-          </li>
-          <li class="flex items-center gap-4 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-            <span class="flex-none w-9 h-9 rounded-full bg-gred/10 text-gred flex items-center justify-center">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-            </span>
-            <p class="font-semibold">Proudly local — a real Aucklander, not a courier box</p>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ======= Pricing ======= -->
-    <section id="pricing" class="max-w-lg lg:max-w-5xl mx-auto px-6 py-16 lg:py-24">
-      <h2 class="text-3xl lg:text-4xl font-extrabold tracking-tight text-center">Simple one-time pricing</h2>
-      <p class="mt-3 text-slate-500 text-center text-lg">Pay once. Yours forever.</p>
-
-      <div class="mt-12 grid gap-8 lg:grid-cols-3 lg:items-start">
-
-        <!-- Starter -->
-        <div class="rounded-3xl border border-slate-200 p-8 shadow-sm bg-white">
-          <h3 class="text-lg font-bold text-slate-500">Starter</h3>
-          <p class="mt-2 text-5xl font-extrabold tracking-tight">$49</p>
-          <p class="mt-1 text-sm text-slate-400">one-time</p>
-          <ul class="mt-6 space-y-3 text-slate-600">
-            <li class="flex gap-3">
-              <svg class="flex-none w-5 h-5 mt-0.5 text-ggreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-              1 review stand
-            </li>
-            <li class="flex gap-3">
-              <svg class="flex-none w-5 h-5 mt-0.5 text-ggreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-              Programmed to your Google link
-            </li>
-          </ul>
-          <a href="https://wa.me/642041087540?text=Hi%20TapKiwi!%20I%27d%20like%20to%20get%20started%20with%20the%20Starter%20bundle%20(%2449)."
-             class="mt-8 block text-center font-bold text-gblue border-2 border-gblue rounded-2xl px-6 py-4 active:scale-[0.98] transition">
-            Get started
-          </a>
+      <div class="border border-slate-300 rounded-lg px-[5mm] py-[2.5mm] flex items-center justify-between">
+        <div>
+          <p class="text-[11pt] font-extrabold">Starter</p>
+          <p class="text-[8.5pt] text-slate-500 leading-snug">1 review stand, programmed to your Google link</p>
         </div>
-
-        <!-- Growth (highlighted) -->
-        <div class="relative rounded-3xl border-2 border-gblue p-8 shadow-xl shadow-gblue/15 bg-white lg:-mt-4">
-          <span class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gblue text-white text-xs font-bold uppercase tracking-wider rounded-full px-4 py-1.5 whitespace-nowrap">
-            Most popular
-          </span>
-          <h3 class="text-lg font-bold text-gblue">Growth</h3>
-          <p class="mt-2 text-5xl font-extrabold tracking-tight">$99</p>
-          <p class="mt-1 text-sm text-slate-400">one-time</p>
-          <ul class="mt-6 space-y-3 text-slate-600">
-            <li class="flex gap-3">
-              <svg class="flex-none w-5 h-5 mt-0.5 text-ggreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-              1 review stand
-            </li>
-            <li class="flex gap-3">
-              <svg class="flex-none w-5 h-5 mt-0.5 text-ggreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-              3 keychain tags staff hand out
-            </li>
-          </ul>
-          <a href="https://wa.me/642041087540?text=Hi%20TapKiwi!%20I%27d%20like%20to%20get%20started%20with%20the%20Growth%20bundle%20(%2499)."
-             class="mt-8 block text-center font-bold text-white bg-gblue rounded-2xl px-6 py-4 shadow-lg shadow-gblue/30 ring-4 ring-gblue/15 active:scale-[0.98] transition">
-            Get started
-          </a>
-        </div>
-
-        <!-- Pro -->
-        <div class="rounded-3xl border border-slate-200 p-8 shadow-sm bg-white">
-          <h3 class="text-lg font-bold text-slate-500">Pro</h3>
-          <p class="mt-2 text-5xl font-extrabold tracking-tight">$179</p>
-          <p class="mt-1 text-sm text-slate-400">one-time</p>
-          <ul class="mt-6 space-y-3 text-slate-600">
-            <li class="flex gap-3">
-              <svg class="flex-none w-5 h-5 mt-0.5 text-ggreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-              1 review stand
-            </li>
-            <li class="flex gap-3">
-              <svg class="flex-none w-5 h-5 mt-0.5 text-ggreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-              5 keychain tags
-            </li>
-            <li class="flex gap-3">
-              <svg class="flex-none w-5 h-5 mt-0.5 text-ggreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-              Window sticker
-            </li>
-            <li class="flex gap-3">
-              <svg class="flex-none w-5 h-5 mt-0.5 text-ggreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
-              Instagram / Facebook combo
-            </li>
-          </ul>
-          <a href="https://wa.me/642041087540?text=Hi%20TapKiwi!%20I%27d%20like%20to%20get%20started%20with%20the%20Pro%20bundle%20(%24179)."
-             class="mt-8 block text-center font-bold text-gblue border-2 border-gblue rounded-2xl px-6 py-4 active:scale-[0.98] transition">
-            Get started
-          </a>
-        </div>
+        <p class="text-[15pt] font-extrabold pl-[4mm]">$49</p>
       </div>
-    </section>
 
-    <!-- ======= FAQ ======= -->
-    <section class="bg-slate-50 border-y border-slate-100">
-      <div class="max-w-lg lg:max-w-2xl mx-auto px-6 py-16 lg:py-20">
-        <h2 class="text-3xl lg:text-4xl font-extrabold tracking-tight text-center">Questions? Sorted.</h2>
-
-        <div class="mt-10 space-y-4">
-          <details class="group bg-white rounded-2xl border border-slate-200 shadow-sm">
-            <summary class="flex items-center justify-between gap-4 cursor-pointer p-6 font-bold text-lg">
-              Are there any monthly fees?
-              <svg class="faq-chevron flex-none w-5 h-5 text-gblue transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-            </summary>
-            <p class="px-6 pb-6 -mt-1 text-slate-500 leading-relaxed">No. One-time payment, yours forever.</p>
-          </details>
-
-          <details class="group bg-white rounded-2xl border border-slate-200 shadow-sm">
-            <summary class="flex items-center justify-between gap-4 cursor-pointer p-6 font-bold text-lg">
-              Does it work on all phones?
-              <svg class="faq-chevron flex-none w-5 h-5 text-gblue transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-            </summary>
-            <p class="px-6 pb-6 -mt-1 text-slate-500 leading-relaxed">Yes, tap works on modern phones; QR code covers the rest.</p>
-          </details>
-
-          <details class="group bg-white rounded-2xl border border-slate-200 shadow-sm">
-            <summary class="flex items-center justify-between gap-4 cursor-pointer p-6 font-bold text-lg">
-              Do I need to set anything up?
-              <svg class="faq-chevron flex-none w-5 h-5 text-gblue transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-            </summary>
-            <p class="px-6 pb-6 -mt-1 text-slate-500 leading-relaxed">No. I program it to your Google page and install it on the spot.</p>
-          </details>
+      <div class="relative border-[0.6mm] border-gblue rounded-lg px-[5mm] py-[2.5mm] flex items-center justify-between">
+        <span class="absolute -top-[2.4mm] left-[5mm] bg-gblue text-white text-[6.5pt] font-extrabold uppercase tracking-[0.12em] rounded-full px-[3mm] py-[0.8mm] leading-none">
+          Most popular
+        </span>
+        <div>
+          <p class="text-[11pt] font-extrabold text-gblue">Growth</p>
+          <p class="text-[8.5pt] text-slate-500 leading-snug">1 stand + 3 keychain tags staff hand out</p>
         </div>
+        <p class="text-[15pt] font-extrabold pl-[4mm]">$99</p>
       </div>
-    </section>
 
-    <!-- ======= Final CTA ======= -->
-    <section class="max-w-lg lg:max-w-3xl mx-auto px-6 py-16 lg:py-24 text-center">
-      <div class="flex justify-center gap-1.5 mb-6" aria-hidden="true">
-        <span class="w-2.5 h-2.5 rounded-full bg-gblue"></span>
-        <span class="w-2.5 h-2.5 rounded-full bg-gred"></span>
-        <span class="w-2.5 h-2.5 rounded-full bg-gyellow"></span>
-        <span class="w-2.5 h-2.5 rounded-full bg-ggreen"></span>
+      <div class="border border-slate-300 rounded-lg px-[5mm] py-[2.5mm] flex items-center justify-between">
+        <div>
+          <p class="text-[11pt] font-extrabold">Pro</p>
+          <p class="text-[8.5pt] text-slate-500 leading-snug">1 stand + 5 keychains + window sticker + Instagram/Facebook combo</p>
+        </div>
+        <p class="text-[15pt] font-extrabold pl-[4mm]">$179</p>
       </div>
-      <h2 class="text-3xl lg:text-5xl font-extrabold tracking-tight">
-        Your next 5-star review is one tap away
-      </h2>
-      <p class="mt-4 text-lg text-slate-500">
-        Free demo at your counter. If you don't love it, no hard feelings.
+
+      <p class="text-[8pt] font-semibold text-slate-400 text-center pt-[0.5mm]">
+        One-time payment &middot; no monthly fees &middot; yours forever
       </p>
-      <a href="https://wa.me/642041087540?text=Hi%20TapKiwi!%20I%27d%20like%20to%20book%20a%20free%20demo%20for%20my%20business."
-         class="mt-8 block lg:inline-block lg:w-auto w-full text-center bg-gblue text-white text-lg font-bold rounded-2xl px-10 py-5 shadow-lg shadow-gblue/30 ring-4 ring-gblue/15 active:scale-[0.98] transition">
-        Book a free demo
-      </a>
     </section>
-  </main>
 
-  <!-- ======= Footer ======= -->
-  <footer class="border-t border-slate-100 pb-28 lg:pb-10">
-    <div class="max-w-lg lg:max-w-5xl mx-auto px-6 py-8 text-center text-sm text-slate-400">
-      <p class="font-bold text-ink text-base">Tap<span class="text-ggreen">Kiwi</span><span class="text-gblue">.</span></p>
-      <p class="mt-2">Proudly local · Auckland, New Zealand</p>
-      <p class="mt-1">&copy; 2026 TapKiwi. All rights reserved.</p>
-    </div>
-  </footer>
+    <!-- ======= Bottom CTA ======= -->
+    <section class="mt-[4mm] border-t-[0.5mm] border-slate-200 pt-[4mm] flex items-center gap-[6mm]">
+      <!-- QR placeholder -->
+      <div class="flex-none w-[28mm] h-[28mm] border-[0.5mm] border-dashed border-slate-400 rounded-lg flex items-center justify-center text-center p-[2mm]">
+        <p class="text-[6.5pt] font-bold uppercase tracking-wider text-slate-400 leading-relaxed">
+          Insert<br />WhatsApp<br />QR code<br />here
+        </p>
+      </div>
 
-  <!-- ======= Sticky mobile CTA bar ======= -->
-  <div id="sticky-cta"
-       class="fixed bottom-0 inset-x-0 lg:hidden bg-white/90 backdrop-blur border-t border-slate-200 px-5 pt-3 safe-bottom transition-transform duration-300 translate-y-full">
-    <a href="https://wa.me/642041087540?text=Hi%20TapKiwi!%20I%27d%20like%20to%20book%20a%20free%20demo%20for%20my%20business."
-       class="block text-center bg-gblue text-white text-base font-bold rounded-xl px-6 py-4 shadow-lg shadow-gblue/25 active:scale-[0.98] transition">
-      Book a free demo
-    </a>
+      <!-- Contact -->
+      <div>
+        <p class="text-[13pt] font-extrabold leading-tight">
+          WhatsApp Jackson
+        </p>
+        <p class="text-[17pt] font-extrabold text-gblue leading-tight tracking-tight">
+          020 4108 7540
+        </p>
+        <p class="text-[10.5pt] font-semibold text-slate-500 mt-[1mm]">
+          to book a <span class="text-ink font-extrabold">free demo</span>
+        </p>
+      </div>
+    </section>
+
   </div>
-
-  <script>
-    // Show the sticky bar only after the hero CTA scrolls out of view,
-    // so it never doubles up with the primary button.
-    (function () {
-      var bar = document.getElementById('sticky-cta');
-      var heroCta = document.querySelector('main a[href^="https://wa.me"]');
-      if (!bar || !heroCta || !('IntersectionObserver' in window)) {
-        bar && bar.classList.remove('translate-y-full');
-        return;
-      }
-      new IntersectionObserver(function (entries) {
-        bar.classList.toggle('translate-y-full', entries[0].isIntersecting);
-      }, { threshold: 0 }).observe(heroCta);
-    })();
-  </script>
 
 </body>
 </html>
