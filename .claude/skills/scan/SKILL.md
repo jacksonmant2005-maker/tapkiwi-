@@ -56,9 +56,26 @@ Flag column. Businesses with 50+ reviews or `unknown` counts get no flag.
    replaced with hyphens — e.g. `data/ponsonby-2026-07-14.md`,
    `data/te-atatu-2026-07-14.md`). Use today's date. If the file already
    exists from an earlier scan today, overwrite it with the fresh results.
-3. Commit the file with the message `Scan: [Suburb] [YYYY-MM-DD]` and push
-   to the current branch (`git push -u origin <current-branch>`).
-4. Reply to the user with: the file path, total businesses found per
+3. Update `data/manifest.json` — the dashboard reads this to discover scan
+   files (GitHub Pages can't list folders). Add an entry for this scan:
+
+   ```json
+   {
+     "scans": [
+       { "file": "ponsonby-2026-07-14.md", "suburb": "Ponsonby", "date": "2026-07-14" }
+     ]
+   }
+   ```
+
+   Rules: create the manifest with this shape if it doesn't exist; never
+   remove existing entries; if an entry with the same `file` already exists,
+   leave the list unchanged; keep `scans` sorted by `date` descending
+   (newest first). Only ever touch `manifest.json` — never modify or delete
+   the raw `.md` scan files of earlier scans.
+4. Commit the scan file AND the manifest together with the message
+   `Scan: [Suburb] [YYYY-MM-DD]` and push to the current branch
+   (`git push -u origin <current-branch>`).
+5. Reply to the user with: the file path, total businesses found per
    category, and how many were flagged (<50 reviews).
 
 ### Output file template

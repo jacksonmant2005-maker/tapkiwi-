@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard v2 — Lead Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'] }
+      }
+    }
+  };
+</script>
+<style type="text/tailwindcss">
+  body { @apply bg-slate-950 text-slate-100 antialiased; }
+  .stat-num { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="min-h-full">
+
+<div class="max-w-6xl mx-auto px-4 py-6 sm:py-10">
+
+  <!-- Header -->
+  <header class="mb-6 sm:mb-8">
+    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Dashboard <span class="text-emerald-400">v2</span></h1>
+    <p class="text-slate-400 text-sm mt-1">Lead tracker · fed by Research Assistant scans in <code class="text-slate-300">data/</code></p>
+  </header>
+
+  <!-- Stats Bar -->
+  <section aria-label="Pipeline stats" class="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
+      <div class="text-xs sm:text-sm font-medium text-slate-400 uppercase tracking-wide">Pitches Made</div>
+      <div id="stat-pitches" class="stat-num text-3xl sm:text-5xl font-bold mt-1 text-sky-400">0</div>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
+      <div class="text-xs sm:text-sm font-medium text-slate-400 uppercase tracking-wide">Sales Closed</div>
+      <div id="stat-sales" class="stat-num text-3xl sm:text-5xl font-bold mt-1 text-emerald-400">0</div>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6">
+      <div class="text-xs sm:text-sm font-medium text-slate-400 uppercase tracking-wide">Cash Earned</div>
+      <div id="stat-cash" class="stat-num text-3xl sm:text-5xl font-bold mt-1 text-amber-300">$0</div>
+    </div>
+  </section>
+
+  <!-- Load error / empty state -->
+  <div id="notice" class="hidden bg-slate-900 border border-slate-700 rounded-2xl p-6 text-slate-300 text-sm"></div>
+
+  <!-- Lead sections get injected here -->
+  <main id="leads"></main>
+
+</div>
+
+<!-- Sale amount modal -->
+<div id="sale-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 p-4">
+  <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+    <h2 class="text-lg font-bold">Nice one! 🎉</h2>
+    <p class="text-slate-400 text-sm mt-1 mb-4">How much did <span id="sale-biz-name" class="text-slate-200 font-semibold"></span> pay?</p>
+    <div class="grid grid-cols-3 gap-3">
+      <button data-amount="49"  class="tier-btn bg-slate-800 hover:bg-emerald-600 border border-slate-600 rounded-xl py-4 text-xl font-bold transition-colors">$49</button>
+      <button data-amount="99"  class="tier-btn bg-slate-800 hover:bg-emerald-600 border border-slate-600 rounded-xl py-4 text-xl font-bold transition-colors">$99</button>
+      <button data-amount="179" class="tier-btn bg-slate-800 hover:bg-emerald-600 border border-slate-600 rounded-xl py-4 text-xl font-bold transition-colors">$179</button>
+    </div>
+    <button id="sale-cancel" class="mt-4 w-full text-slate-400 hover:text-slate-200 text-sm py-2">Cancel</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'tapkiwi-dashboard-v2';
+  const STATUSES = [
+    { id: 'not_pitched', label: 'Not pitched', cls: 'bg-slate-800 text-slate-300 border-slate-600' },
+    { id: 'pitched',     label: 'Pitched',     cls: 'bg-sky-600 text-white border-sky-400' },
+    { id: 'sold',        label: 'Sold',        cls: 'bg-emerald-600 text-white border-emerald-400' },
+    { id: 'follow_up',   label: 'Follow-up',   cls: 'bg-amber-500 text-slate-950 border-amber-300' }
+  ];
+  const INACTIVE_CLS = 'bg-slate-900 text-slate-500 border-slate-700 hover:border-slate-500 hover:text-slate-300';
+
+  let leads = [];           // [{id, suburb, scanDate, name, type, reviewRaw, reviewCount, address}]
+  let state = loadState();  // { [leadId]: {status, amount} }
+  let pendingSaleId = null;
+
+  // ---------- persistence (localStorage only, per-device) ----------
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* private mode etc. */ }
+  }
+  function leadState(id) {
+    return state[id] || { status: 'not_pitched', amount: 0 };
+  }
+
+  // ---------- data loading ----------
+  async function loadData() {
+    const res = await fetch('../data/manifest.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('manifest.json fetch failed: ' + res.status);
+    const manifest = await res.json();
+    const scans = (manifest.scans || []).slice()
+      .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+
+    // Latest scan per suburb wins, so a re-scan replaces (not duplicates) its cards.
+    const seen = new Set();
+    const latest = scans.filter(s => {
+      const key = String(s.suburb).toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    const all = [];
+    for (const scan of latest) {
+      const r = await fetch('../data/' + scan.file, { cache: 'no-store' });
+      if (!r.ok) continue;
+      const md = await r.text();
+      all.push(...parseScan(md, scan));
+    }
+    return all;
+  }
+
+  // Parses the /scan output format: "## Category" sections containing
+  // | Business Name | Type | Review Count | Address | Flag | tables.
+  function parseScan(md, scan) {
+    const out = [];
+    let section = '';
+    for (const rawLine of md.split('\n')) {
+      const line = rawLine.trim();
+      if (line.startsWith('## ')) { section = line.slice(3).trim(); continue; }
+      if (section === 'Summary' || !line.startsWith('|')) continue;
+      const cells = line.split('|').map(c => c.trim());
+      cells.shift(); cells.pop(); // drop empties around outer pipes
+      if (cells.length < 4) continue;
+      if (cells[0] === 'Business Name' || /^:?-{2,}:?$/.test(cells[0])) continue;
+      const name = cells[0];
+      if (!name) continue;
+      const reviewRaw = cells[2] || 'unknown';
+      out.push({
+        id: (scan.suburb + '::' + name).toLowerCase(),
+        suburb: scan.suburb,
+        scanDate: scan.date,
+        name: name,
+        type: cells[1] || section,
+        reviewRaw: reviewRaw,
+        reviewCount: parseReviewCount(reviewRaw),
+        address: cells[3] || 'unknown'
+      });
+    }
+    return out;
+  }
+
+  // Returns a number, or null for unknown/unparseable. Never invents one.
+  function parseReviewCount(raw) {
+    if (!raw || raw.toLowerCase() === 'unknown') return null;
+    const n = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  // ---------- rendering ----------
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function badgeHtml(lead) {
+    if (lead.reviewCount !== null && lead.reviewCount < 50) {
+      return '<span class="inline-flex items-center gap-1 text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/40 rounded-full px-2.5 py-1">⚠️ Under 50 reviews</span>';
+    }
+    if (lead.reviewCount === null) {
+      return '<span class="inline-flex items-center gap-1 text-xs font-semibold bg-sky-500/15 text-sky-300 border border-sky-500/40 rounded-full px-2.5 py-1">❓ Reviews unknown</span>';
+    }
+    return '';
+  }
+
+  function cardHtml(lead) {
+    const st = leadState(lead.id);
+    const soldNote = st.status === 'sold' && st.amount
+      ? '<div class="text-emerald-400 text-sm font-semibold mt-2">Closed for $' + st.amount + '</div>' : '';
+    const buttons = STATUSES.map(s => {
+      const active = st.status === s.id;
+      return '<button data-lead="' + esc(lead.id) + '" data-status="' + s.id + '"' +
+        ' class="text-xs font-semibold rounded-full border px-3 py-1.5 transition-colors ' +
+        (active ? s.cls : INACTIVE_CLS) + '"' +
+        (active ? ' aria-pressed="true"' : ' aria-pressed="false"') + '>' + s.label + '</button>';
+    }).join('');
+
+    return '<article class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col gap-3">' +
+      '<div class="flex items-start justify-between gap-2">' +
+        '<div>' +
+          '<h3 class="font-bold text-base sm:text-lg leading-snug">' + esc(lead.name) + '</h3>' +
+          '<span class="inline-block text-xs font-medium text-slate-400 bg-slate-800 rounded-full px-2.5 py-0.5 mt-1.5">' + esc(lead.type) + '</span>' +
+        '</div>' +
+        '<div class="shrink-0 text-right">' + badgeHtml(lead) + '</div>' +
+      '</div>' +
+      '<div class="text-sm text-slate-400 space-y-1">' +
+        '<div><span class="text-slate-500">Reviews:</span> <span class="text-slate-200 font-semibold">' + esc(lead.reviewRaw) + '</span></div>' +
+        '<div><span class="text-slate-500">Address:</span> ' + esc(lead.address) + '</div>' +
+      '</div>' +
+      soldNote +
+      '<div class="flex flex-wrap gap-1.5 mt-auto pt-1">' + buttons + '</div>' +
+    '</article>';
+  }
+
+  function render() {
+    const main = document.getElementById('leads');
+    const suburbs = [...new Set(leads.map(l => l.suburb))];
+    main.innerHTML = suburbs.map(suburb => {
+      const group = leads.filter(l => l.suburb === suburb);
+      return '<section class="mb-10">' +
+        '<div class="flex items-baseline gap-3 mb-4">' +
+          '<h2 class="text-xl font-bold">' + esc(suburb) + '</h2>' +
+          '<span class="text-xs text-slate-500">scanned ' + esc(group[0].scanDate) + ' · ' + group.length + ' leads</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">' +
+          group.map(cardHtml).join('') +
+        '</div>' +
+      '</section>';
+    }).join('');
+    renderStats();
+  }
+
+  function renderStats() {
+    let pitches = 0, sales = 0, cash = 0;
+    for (const lead of leads) {
+      const st = leadState(lead.id);
+      if (st.status !== 'not_pitched') pitches++;
+      if (st.status === 'sold') { sales++; cash += st.amount || 0; }
+    }
+    document.getElementById('stat-pitches').textContent = pitches;
+    document.getElementById('stat-sales').textContent = sales;
+    document.getElementById('stat-cash').textContent = '$' + cash.toLocaleString();
+  }
+
+  // ---------- interactions ----------
+  document.getElementById('leads').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-lead]');
+    if (!btn) return;
+    const id = btn.dataset.lead;
+    const status = btn.dataset.status;
+    if (status === 'sold') {
+      openSaleModal(id);
+      return;
+    }
+    state[id] = { status: status, amount: 0 };
+    saveState();
+    render();
+  });
+
+  function openSaleModal(id) {
+    pendingSaleId = id;
+    const lead = leads.find(l => l.id === id);
+    document.getElementById('sale-biz-name').textContent = lead ? lead.name : '';
+    document.getElementById('sale-modal').classList.remove('hidden');
+  }
+  function closeSaleModal() {
+    pendingSaleId = null;
+    document.getElementById('sale-modal').classList.add('hidden');
+  }
+
+  document.querySelectorAll('.tier-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!pendingSaleId) return;
+      state[pendingSaleId] = { status: 'sold', amount: parseInt(btn.dataset.amount, 10) };
+      saveState();
+      closeSaleModal();
+      render();
+    });
+  });
+  document.getElementById('sale-cancel').addEventListener('click', closeSaleModal);
+  document.getElementById('sale-modal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeSaleModal();
+  });
+
+  // ---------- boot ----------
+  loadData().then(data => {
+    leads = data;
+    if (!leads.length) {
+      const n = document.getElementById('notice');
+      n.textContent = 'No leads yet. Run "/scan [suburb]" in Claude Code to generate your first lead list.';
+      n.classList.remove('hidden');
+    }
+    render();
+  }).catch(() => {
+    const n = document.getElementById('notice');
+    n.innerHTML = 'Couldn’t load <code>data/manifest.json</code>. This page needs to be served over HTTP ' +
+      '(GitHub Pages does this automatically). If you’re developing locally, run ' +
+      '<code class="text-slate-100">python3 -m http.server</code> in the repo root and open ' +
+      '<code class="text-slate-100">http://localhost:8000/dashboard/</code>.';
+    n.classList.remove('hidden');
+  });
+})();
+</script>
+</body>
+</html>
