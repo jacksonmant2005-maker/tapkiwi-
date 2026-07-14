@@ -45,6 +45,14 @@
     </div>
   </section>
 
+  <!-- Suburb filter -->
+  <div class="flex items-center gap-3 mb-6">
+    <label for="suburb-filter" class="text-sm font-medium text-slate-400">Suburb</label>
+    <select id="suburb-filter" class="bg-slate-900 border border-slate-700 text-slate-100 text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-slate-500">
+      <option value="">All suburbs</option>
+    </select>
+  </div>
+
   <!-- Load error / empty state -->
   <div id="notice" class="hidden bg-slate-900 border border-slate-700 rounded-2xl p-6 text-slate-300 text-sm"></div>
 
@@ -206,7 +214,9 @@
 
   function render() {
     const main = document.getElementById('leads');
-    const suburbs = [...new Set(leads.map(l => l.suburb))];
+    const filter = document.getElementById('suburb-filter').value;
+    const suburbs = [...new Set(leads.map(l => l.suburb))]
+      .filter(s => !filter || s === filter);
     main.innerHTML = suburbs.map(suburb => {
       const group = leads.filter(l => l.suburb === suburb);
       return '<section class="mb-10">' +
@@ -275,8 +285,21 @@
   });
 
   // ---------- boot ----------
+  document.getElementById('suburb-filter').addEventListener('change', render);
+
+  function populateSuburbFilter() {
+    const sel = document.getElementById('suburb-filter');
+    for (const suburb of [...new Set(leads.map(l => l.suburb))]) {
+      const opt = document.createElement('option');
+      opt.value = suburb;
+      opt.textContent = suburb;
+      sel.appendChild(opt);
+    }
+  }
+
   loadData().then(data => {
     leads = data;
+    populateSuburbFilter();
     if (!leads.length) {
       const n = document.getElementById('notice');
       n.textContent = 'No leads yet. Run "/scan [suburb]" in Claude Code to generate your first lead list.';
