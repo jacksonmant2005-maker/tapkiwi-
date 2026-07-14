@@ -1,6 +1,11 @@
 {
   "scans": [
     {
+      "file": "hibiscus-coast-2026-07-14.md",
+      "suburb": "Hibiscus Coast",
+      "date": "2026-07-14"
+    },
+    {
       "file": "ponsonby-2026-07-14.md",
       "suburb": "Ponsonby",
       "date": "2026-07-14"
